@@ -1,0 +1,15 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pubsub
+  namespace: {{ .Values.namespace }}
+spec:
+  type: pubsub.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: "{{ .Values.dapr.redisHost }}:{{ .Values.dapr.redisPort }}"
+  - name: redisPassword
+    secretKeyRef:
+      name: redis
+      key: redis-password

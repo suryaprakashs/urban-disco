@@ -1,0 +1,8 @@
+apiVersion: v2
+name: inizio
+description: A Helm Chart to deploy inizio application.
+version: 0.0.1
+keywords:
+  - inizio
+  - .NET
+appVersion: 1.0.0

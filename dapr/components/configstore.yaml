@@ -1,0 +1,21 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: config-store
+  namespace: inizio
+spec:
+  type: configuration.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: redis:6379
+  - name: redisPassword
+    secretKeyRef:
+      name: redisPassword
+      key: redisPassword
+  - name: keyPrefix
+    value: none
+  - name: actorStateStore
+    value: "true"
+auth:
+  secretStore: secret-store

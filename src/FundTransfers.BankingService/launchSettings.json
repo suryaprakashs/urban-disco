@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "banking-api",
+      "composeLaunchUrl": "{Scheme}://localhost:{ServicePort}/swagger",
+      "serviceActions": {
+        "dapr-placement": "StartWithoutDebugging",
+        "redis": "StartWithoutDebugging",
+        "banking-api": "StartDebugging",
+        "banking-api-dapr": "StartWithoutDebugging",
+        "sql-server": "StartWithoutDebugging",
+        "kafka": "StartWithoutDebugging",
+        "zookeeper": "StartWithoutDebugging"
+      }
+    }
+  }
+}

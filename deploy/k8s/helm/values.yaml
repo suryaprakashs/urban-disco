@@ -1,0 +1,13 @@
+environment: development
+
+namespace: inizio
+
+label:
+  app: inizio-application
+
+dapr:
+  redisHost: redis.default.svc.cluster.local
+  redisPort: 6379
+  otelEndpointAddress: http://zipkin.default.svc.cluster.local:9411/api/v2/spans
+
+replicas: 1

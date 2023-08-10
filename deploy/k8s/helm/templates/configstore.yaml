@@ -1,0 +1,17 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: config-store
+  namespace: {{ .Values.namespace }}
+spec:
+  type: configuration.redis
+  version: v1
+  metadata:
+  - name: redisHost
+    value: "{{ .Values.dapr.redisHost }}:{{ .Values.dapr.redisPort }}"
+  - name: redisPassword
+    secretKeyRef:
+      name: redis
+      key: redis-password
+  - name: keyPrefix
+    value: none

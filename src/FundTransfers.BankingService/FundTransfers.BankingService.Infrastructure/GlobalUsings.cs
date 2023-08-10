@@ -1,0 +1,9 @@
+global using Dapr.Client;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using FundTransfers.BankingService.Domain.AggregatesModel;
+global using FundTransfers.BankingService.Domain.SeedWork;
+global using FundTransfers.BankingService.Infrastructure.EntityConfigurations;
+global using System;
+global using System.Threading;
+global using System.Threading.Tasks;

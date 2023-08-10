@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: banking
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.label.name }}
+    service: banking
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      service: banking
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.label.app }}
+        service: banking
+        environment: {{ .Values.environment }}
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "banking"
+        dapr.io/app-port: "80"
+        dapr.io/config: "config"
+        dapr.io/log-level: "debug"
+        dapr.io/log-as-json: "true"
+    spec:
+      containers:
+      - name: banking
+        image: banking-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        env:
+        - name: apphost
+          value: {{ .Values.hostname }}
+        - name: appenvironment
+          value: {{ .Values.environment}}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: banking
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.label.app }}
+    service: banking
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+    name: http
+  selector:
+    service: banking
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: banking-ingress
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.label.app }}
+    service: banking
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths: 
+      - pathType: Prefix
+        path: /banking(/|$)(.*)
+        backend:
+          service:
+            name: banking
+            port: 
+              number: 80

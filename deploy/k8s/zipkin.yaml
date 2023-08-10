@@ -1,0 +1,46 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: zipkin
+  namespace: default
+  labels:
+    app: inizio
+    service: zipkin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: zipkin
+  template:
+    metadata:
+      labels:
+        app: inizio
+        service: zipkin
+    spec:
+      containers:
+      - name: zipkin
+        image: openzipkin/zipkin
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 9411
+            protocol: TCP
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: zipkin
+  namespace: default
+  labels:
+    app: inizio
+    service: zipkin
+spec:
+  ports:
+    - port: 9411
+      targetPort: 9411
+      protocol: TCP
+      name: zipkin
+  selector:
+    service: zipkin

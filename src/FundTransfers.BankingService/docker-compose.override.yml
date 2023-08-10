@@ -1,0 +1,60 @@
+version: '3.4'
+
+services:
+  sql-server:
+    environment:
+      - SA_PASSWORD=sadmin@123
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    volumes:
+      - app-sqldata:/var/opt/mssql
+
+  banking-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:80
+    ports:
+      - "8080:80"
+
+  banking-api-dapr:
+    command: ["./daprd",
+      "-app-id", "banking-api",
+      "-app-port", "80",
+      "-placement-host-address", "dapr-placement:50000",
+      "-components-path", "/dapr/components",
+      "-config", "/dapr/components/config.yaml"
+      ]
+    volumes:
+      - "./../../dapr/components/:/dapr/components"
+      
+  dapr-placement:
+    command: ["./placement", "-port", "50000", "-log-level", "debug"]
+    ports:
+      - "50000:50000"
+      
+  redis:
+    ports:
+      - "6379:6379"
+
+  zookeeper:
+    ports:
+      - "2181:2181"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+
+  kafka:
+    ports:
+      - "9092:9092"
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+
+volumes:
+  app-sqldata:
+    external: false
